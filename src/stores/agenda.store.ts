@@ -71,6 +71,7 @@ export const useAgendaStore = defineStore('agenda', () => {
   async function confirmarAgendamento(dados: {
     nome: string
     telefone: string
+    clienteId: string
   }): Promise<Agendamento | null> {
     const { servicoId, profissionalId, data, horario } = selecao.value
     if (!servicoId || !profissionalId || !data || !horario) return null
@@ -82,7 +83,7 @@ export const useAgendaStore = defineStore('agenda', () => {
         profissionalId,
         data,
         horario,
-        clienteId: '1', // TODO: virá do auth store quando integrado
+        clienteId: dados.clienteId,
       })
       return agendamento
     } finally {

@@ -1,5 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw, NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
+import { getToken } from '@/services/api'
+
+function requireAuth(
+  _to: RouteLocationNormalized,
+  _from: RouteLocationNormalized,
+  next: NavigationGuardNext,
+) {
+  if (!getToken()) {
+    next('/cliente/login')
+  } else {
+    next()
+  }
+}
 
 const routes: RouteRecordRaw[] = [
   {
@@ -11,10 +24,44 @@ const routes: RouteRecordRaw[] = [
     path: '/agendar',
     name: 'agendar',
     component: () => import('@/views/AgendarView.vue'),
+    beforeEnter: requireAuth,
+  },
+  {
+    path: '/cliente/login',
+    name: 'cliente-login',
+    component: () => import('@/views/cliente/LoginView.vue'),
+  },
+  {
+    path: '/cliente/registro',
+    name: 'cliente-registro',
+    component: () => import('@/views/cliente/RegistroView.vue'),
+  },
+  {
+    path: '/cliente',
+    component: () => import('@/layouts/ClientLayout.vue'),
+    beforeEnter: requireAuth,
+    children: [
+      {
+        path: '',
+        name: 'cliente-home',
+        component: () => import('@/views/cliente/ClienteHomeView.vue'),
+      },
+      {
+        path: 'agendamentos',
+        name: 'cliente-agendamentos',
+        component: () => import('@/views/cliente/AgendamentosView.vue'),
+      },
+      {
+        path: 'historico',
+        name: 'cliente-historico',
+        component: () => import('@/views/cliente/HistoricoView.vue'),
+      },
+    ],
   },
   {
     path: '/admin',
     component: () => import('@/layouts/AdminLayout.vue'),
+    beforeEnter: requireAuth,
     children: [
       {
         path: '',
@@ -46,27 +93,6 @@ const routes: RouteRecordRaw[] = [
         path: 'financeiro',
         name: 'admin-financeiro',
         component: () => import('@/views/admin/FinanceiroView.vue'),
-      },
-    ],
-  },
-  {
-    path: '/cliente',
-    component: () => import('@/layouts/ClientLayout.vue'),
-    children: [
-      {
-        path: '',
-        name: 'cliente-home',
-        component: () => import('@/views/cliente/ClienteHomeView.vue'),
-      },
-      {
-        path: 'agendamentos',
-        name: 'cliente-agendamentos',
-        component: () => import('@/views/cliente/AgendamentosView.vue'),
-      },
-      {
-        path: 'historico',
-        name: 'cliente-historico',
-        component: () => import('@/views/cliente/HistoricoView.vue'),
       },
     ],
   },

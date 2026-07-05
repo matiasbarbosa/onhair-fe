@@ -29,15 +29,15 @@
   --color-warning:            #fbbf24;
 
   /* ─── Typography ─────────────────────────────────────────────────────── */
-  --font-family:              'Derona', sans-serif;
-  --font-size-xs:             0.72rem;
-  --font-size-sm:             0.82rem;
-  --font-size-base:           0.95rem;
-  --font-size-lg:             1.1rem;
-  --font-size-xl:             1.5rem;
-  --font-size-2xl:            2rem;
-  --font-size-3xl:            clamp(1.8rem, 3.5vw, 2.8rem);
-  --font-size-hero:           clamp(4.5rem, 8vw, 7rem);
+--font-family:              'Derona', sans-serif;
+--font-size-xs:             0.78rem;
+--font-size-sm:             0.88rem;
+--font-size-base:           1rem;
+--font-size-lg:             1.15rem;
+--font-size-xl:             1.5rem;
+--font-size-2xl:            2rem;
+--font-size-3xl:            clamp(1.8rem, 3.5vw, 2.8rem);
+--font-size-hero:           clamp(4.5rem, 8vw, 7rem);
 
   --font-weight-light:        300;
   --font-weight-normal:       400;
@@ -66,10 +66,11 @@
   --space-20: 5rem;
   --space-24: 6rem;
 
-  /* ─── Layout ─────────────────────────────────────────────────────────── */
-  --max-width-container: 1200px;
-  --max-width-content:   680px;
-  --sidebar-width:       260px;
+/* ─── Layout ─────────────────────────────────────────────────────────── */
+--max-width-container: 1200px;
+--max-width-content:   680px;
+--sidebar-width:       260px;
+--header-height:       60px;
 
   /* ─── Radius ─────────────────────────────────────────────────────────── */
   --radius-sm:            2px;
