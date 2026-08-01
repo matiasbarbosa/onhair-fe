@@ -19,8 +19,8 @@ pnpm vitest        # testes
 - Vue 3.5 + Composition API (`<script setup lang="ts">`)
 - vue-router 5.0 (lazy loading)
 - Pinia 3.0 (stores)
-- PrimeVue 4.5 (DatePicker e componentes de UI)
-- date-fns 4.2
+- shadcn-vue (Reka UI) + Tailwind CSS 3 (Dialog, Toast, Select)
+- libphonenumber-js (validação de telefone)
 - TypeScript ~6.0
 - Vite 8
 

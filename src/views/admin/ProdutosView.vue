@@ -7,10 +7,22 @@ import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAdminStore } from '@/stores/admin.store'
 import AppButton from '@/components/shared/AppButton.vue'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { useToast } from '@/composables/useToast'
 
 const router = useRouter()
 const admin = useAdminStore()
+const toast = useToast()
 const busca = ref('')
+const confirmOpen = ref(false)
+const produtoParaExcluir = ref<{ id: string; nome: string } | null>(null)
 
 onMounted(() => {
   admin.carregarProdutos(1, 100)
@@ -30,9 +42,16 @@ function formatPrice(cents: number) {
   return `R$ ${(cents / 100).toFixed(2).replace('.', ',')}`
 }
 
-async function handleExcluir(id: string) {
-  if (!confirm('Remover este produto?')) return
-  await admin.excluirProduto(id)
+function abrirConfirmExcluir(produto: { id: string; nome: string }) {
+  produtoParaExcluir.value = produto
+  confirmOpen.value = true
+}
+
+async function confirmarExcluir() {
+  if (!produtoParaExcluir.value) return
+  await admin.excluirProduto(produtoParaExcluir.value.id)
+  toast.success('Produto removido com sucesso')
+  confirmOpen.value = false
 }
 
 function handleEditar(id: string) {
@@ -85,12 +104,27 @@ function handleEditar(id: string) {
             <td class="col-num">{{ formatPrice(p.precoVenda) }}</td>
             <td class="col-actions">
               <button class="action-btn" @click="handleEditar(p.id)">Editar</button>
-              <button class="action-btn danger" @click="handleExcluir(p.id)">Excluir</button>
+              <button class="action-btn danger" @click="abrirConfirmExcluir({ id: p.id, nome: p.nome })">Excluir</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <Dialog v-model:open="confirmOpen">
+      <DialogContent class="sm:max-w-[400px]">
+        <DialogHeader>
+          <DialogTitle>Remover produto</DialogTitle>
+          <DialogDescription v-if="produtoParaExcluir">
+            Tem certeza que deseja remover <strong>"{{ produtoParaExcluir.nome }}"</strong>? Esta ação não pode ser desfeita.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <AppButton variant="ghost" @click="confirmOpen = false">Cancelar</AppButton>
+          <AppButton @click="confirmarExcluir" :disabled="admin.carregandoProdutos">Remover</AppButton>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 

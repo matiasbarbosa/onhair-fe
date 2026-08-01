@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "vue-expert": {
+      "source": "jeffallan/claude-skills",
+      "sourceType": "github",
+      "skillPath": "skills/vue-expert/SKILL.md",
+      "computedHash": "80995f70e6d4921a9ceb9cb6932587270b939ef415e090d8e5976d294c89e7d4"
+    }
+  }
+}

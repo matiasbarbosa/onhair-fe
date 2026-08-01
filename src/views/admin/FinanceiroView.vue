@@ -6,16 +6,25 @@
 import { onMounted, ref, computed } from 'vue'
 import { useAdminStore } from '@/stores/admin.store'
 import GlassCard from '@/components/shared/GlassCard.vue'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectItemText,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 const admin = useAdminStore()
 
 const mesAtual = new Date().getMonth() + 1
 const anoAtual = new Date().getFullYear()
-const mesFiltro = ref(mesAtual)
+const mesFiltro = ref(String(mesAtual))
 const anoFiltro = ref(anoAtual)
 
 onMounted(() => {
-  admin.carregarFinanceiro(mesFiltro.value, anoFiltro.value)
+  admin.carregarFinanceiro(Number(mesFiltro.value), anoFiltro.value)
 })
 
 const meses = [
@@ -24,7 +33,7 @@ const meses = [
 ]
 
 async function aplicarFiltro() {
-  await admin.carregarFinanceiro(mesFiltro.value, anoFiltro.value)
+  await admin.carregarFinanceiro(Number(mesFiltro.value), anoFiltro.value)
 }
 
 const receitas = computed(() =>
@@ -63,9 +72,18 @@ function formatDate(iso: string) {
 
     <!-- Filtro de período -->
     <div class="filtro-bar">
-      <select v-model.number="mesFiltro" class="filtro-select">
-        <option v-for="(m, i) in meses" :key="m" :value="i + 1">{{ m }}</option>
-      </select>
+      <Select v-model="mesFiltro">
+        <SelectTrigger class="w-[160px]">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem v-for="(m, i) in meses" :key="m" :value="String(i + 1)">
+              <SelectItemText>{{ m }}</SelectItemText>
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
       <input v-model.number="anoFiltro" type="number" class="filtro-ano" />
       <button class="filtro-btn" @click="aplicarFiltro">Filtrar</button>
     </div>
@@ -132,19 +150,6 @@ h1 { font-size: var(--font-size-2xl); font-weight: var(--font-weight-semibold); 
   gap: var(--space-3);
   margin-bottom: var(--space-8);
 }
-
-.filtro-select {
-  background: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
-  color: var(--color-text-primary);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  font-family: var(--font-family);
-  cursor: pointer;
-}
-.filtro-select:focus { border-color: var(--color-gold-500); }
-.filtro-select option { background: var(--color-bg-primary); }
 
 .filtro-ano {
   background: var(--color-input-bg);

@@ -16,11 +16,22 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAdminStore } from '@/stores/admin.store'
 import AppButton from '@/components/shared/AppButton.vue'
 import GlassCard from '@/components/shared/GlassCard.vue'
+import { useToast } from '@/composables/useToast'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectItemText,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { Produto } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
 const admin = useAdminStore()
+const toast = useToast()
 
 const editId = route.params.id as string | undefined
 const isEdit = !!editId
@@ -107,12 +118,15 @@ async function handleSubmit() {
 
     if (isEdit) {
       await admin.editarProduto(editId!, dados)
+      toast.success('Produto atualizado com sucesso')
     } else {
       await admin.adicionarProduto(dados)
+      toast.success('Produto cadastrado com sucesso')
     }
     router.push('/admin/produtos')
   } catch {
     erro.value = 'Erro ao salvar produto'
+    toast.error('Erro ao salvar produto')
   } finally {
     salvando.value = false
   }
@@ -179,13 +193,20 @@ async function handleSubmit() {
 
       <div class="field">
         <label>Unidade</label>
-        <select v-model="form.unidade">
-          <option value="un">Unidade</option>
-          <option value="ml">ml</option>
-          <option value="g">g</option>
-          <option value="kg">kg</option>
-          <option value="l">L</option>
-        </select>
+        <Select v-model="form.unidade">
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="un"><SelectItemText>Unidade</SelectItemText></SelectItem>
+              <SelectItem value="ml"><SelectItemText>ml</SelectItemText></SelectItem>
+              <SelectItem value="g"><SelectItemText>g</SelectItemText></SelectItem>
+              <SelectItem value="kg"><SelectItemText>kg</SelectItemText></SelectItem>
+              <SelectItem value="l"><SelectItemText>L</SelectItemText></SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
 
       <div class="field">
@@ -283,7 +304,7 @@ label {
   letter-spacing: var(--letter-spacing-wide);
 }
 
-input, select {
+input {
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
   color: var(--color-text-primary);
@@ -295,10 +316,7 @@ input, select {
   transition: border-color var(--transition-fast);
 }
 
-input:focus, select:focus { border-color: var(--color-gold-500); }
-
-select { cursor: pointer; }
-select option { background: var(--color-bg-primary); color: var(--color-text-primary); }
+input:focus { border-color: var(--color-gold-500); }
 
 /* ── Barcode Field ──────────────────────────────────────────────────── */
 .barcode-field {
